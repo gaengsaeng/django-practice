@@ -1,0 +1,59 @@
+{% extends "base.html" %} {% load humanize%} {% block header %}
+<script>
+  function proudct_detail(id) {
+    $.ajax({
+      url: "/api/product/" + id,
+      success: function (result) {
+        $("#product-" + id)
+          .popover({
+            html: true,
+            content:
+              result.name +
+              "<br/>" +
+              result.price +
+              "<br/>" +
+              result.description,
+          })
+          .popover("show");
+      },
+    });
+  }
+  function proudct_leave(id) {
+    $("#product-" + id).popover("hide");
+  }
+  $(document).ready(function () {});
+</script>
+{% endblock %} {% block contents %}
+<div class="row mt-5">
+  <div class="col-12">
+    <table class="table table-light">
+      <thead class="thead-lights">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">상품명</th>
+          <th scope="col">가격</th>
+          <th scope="col">등록날짜</th>
+        </tr>
+      </thead>
+      <tbody class="text-dark">
+        {% for product in product_list %}
+        <tr>
+          <th scope="row">{{product.id}}</th>
+          <th scope="row">
+            <a
+              id="product-{{ product.id }}"
+              onmouseenter="proudct_detail({{product.id}});"
+              onmouseleave="proudct_leave({{product.id}});"
+              href="/product/{{product.id}}"
+              >{{product.name}}</a
+            >
+          </th>
+          <th scope="row">{{product.price | intcomma }} 원</th>
+          <th scope="row">{{product.register_date | date:"Y년 m월 d일"}}</th>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
